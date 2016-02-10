@@ -21,7 +21,7 @@ _testmain.go
 
 *.exe
 *.test
-*.prof
 
-/coverage.out
-/drones-events
+
+*.pem
+.DS_Store
