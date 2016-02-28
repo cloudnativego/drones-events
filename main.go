@@ -1,6 +1,10 @@
 package main
 
-import "os"
+import (
+	"os"
+
+	"github.com/cloudnativego/drones-events/service"
+)
 
 func main() {
 	port := os.Getenv("PORT")
@@ -8,6 +12,6 @@ func main() {
 		port = "3000"
 	}
 
-	server := NewServer()
+	server := service.NewServer()
 	server.Run(":" + port)
 }

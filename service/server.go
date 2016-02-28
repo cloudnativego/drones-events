@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"github.com/codegangsta/negroni"
@@ -23,5 +23,5 @@ func NewServer() *negroni.Negroni {
 }
 
 func initRoutes(mx *mux.Router, formatter *render.Render) {
-	// TODO
+	mx.HandleFunc("/api/stats", queryStatsHandler(formatter)).Methods("GET")
 }
