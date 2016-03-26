@@ -93,6 +93,16 @@ func (repo *EventRollupRepository) UpdateLastPositionEvent(positionEvent dronesc
 	return
 }
 
+func (repo *EventRollupRepository) GetTelemetryEvent(droneID string) (event dronescommon.TelemetryUpdatedEvent, err error) {
+	record, err := repo.getTelemetryRecord(droneID)
+
+	if err != nil {
+		event = convertTelemetryRecordToEvent(record)
+	}
+
+	return
+}
+
 func (repo *EventRollupRepository) getTelemetryRecord(droneID string) (record mongoTelemetryRecord, err error) {
 	var records []mongoTelemetryRecord
 	query := bson.M{"drone_id": droneID}
@@ -123,3 +133,25 @@ func convertTelemetryEventToRecord(event dronescommon.TelemetryUpdatedEvent, rec
 
 	return
 }
+
+func convertTelemetryRecordToEvent(record mongoTelemetryRecord) (event dronescommon.TelemetryUpdatedEvent) {
+	t, _ := time.Parse("2006-01-01 15:04:05", record.ReceivedOn)
+	event = dronescommon.TelemetryUpdatedEvent{
+		DroneID:          record.DroneID,
+		RemainingBattery: record.RemainingBattery,
+		Uptime:           record.Uptime,
+		CoreTemp:         record.CoreTemp,
+		ReceivedOn:       t.Unix(),
+	}
+	return
+}
+
+/*
+ype TelemetryUpdatedEvent struct {
+	DroneID          string `json:"drone_id"`
+	RemainingBattery int    `json:"battery"`
+	Uptime           int    `json:"uptime"`
+	CoreTemp         int    `json:"core_temp"`
+	ReceivedOn       int64  `json:"received_on"`
+}
+*/
