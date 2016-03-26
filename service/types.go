@@ -15,7 +15,7 @@ var (
 )
 
 type eventRepository interface {
-	updateLastTelemetryEvent(telemetryEvent dronescommon.TelemetryUpdatedEvent) (err error)
-	updateLastAlertEvent(alertEvent dronescommon.AlertSignalledEvent) (err error)
-	updateLastPositionEvent(positionEvent dronescommon.PositionChangedEvent) (err error)
+	UpdateLastTelemetryEvent(telemetryEvent dronescommon.TelemetryUpdatedEvent) (err error)
+	UpdateLastAlertEvent(alertEvent dronescommon.AlertSignalledEvent) (err error)
+	UpdateLastPositionEvent(positionEvent dronescommon.PositionChangedEvent) (err error)
 }

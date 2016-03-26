@@ -8,19 +8,23 @@ type fakeRepository struct {
 	lastTelemetry dronescommon.TelemetryUpdatedEvent
 }
 
-func (repo *fakeRepository) updateLastTelemetryEvent(telemetryEvent dronescommon.TelemetryUpdatedEvent) (err error) {
+func NewFakeRepository() *fakeRepository {
+	return &fakeRepository{}
+}
+
+func (repo *fakeRepository) UpdateLastTelemetryEvent(telemetryEvent dronescommon.TelemetryUpdatedEvent) (err error) {
 
 	repo.lastTelemetry = telemetryEvent
 	return
 }
 
-func (repo *fakeRepository) updateLastAlertEvent(alertEvent dronescommon.AlertSignalledEvent) (err error) {
+func (repo *fakeRepository) UpdateLastAlertEvent(alertEvent dronescommon.AlertSignalledEvent) (err error) {
 
 	repo.lastAlert = alertEvent
 	return
 }
 
-func (repo *fakeRepository) updateLastPositionEvent(positionEvent dronescommon.PositionChangedEvent) (err error) {
+func (repo *fakeRepository) UpdateLastPositionEvent(positionEvent dronescommon.PositionChangedEvent) (err error) {
 
 	repo.lastPosition = positionEvent
 	return
