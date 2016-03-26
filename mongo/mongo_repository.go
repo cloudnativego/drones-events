@@ -121,21 +121,21 @@ func (repo *EventRollupRepository) getTelemetryRecord(droneID string) (record mo
 }
 
 func convertTelemetryEventToRecord(event dronescommon.TelemetryUpdatedEvent, recordID bson.ObjectId) (record *mongoTelemetryRecord) {
-	time := time.Unix(event.ReceivedOn, 0)
+	t := time.Unix(event.ReceivedOn, 0)
 	record = &mongoTelemetryRecord{
 		RecordID:         recordID,
 		DroneID:          event.DroneID,
 		RemainingBattery: event.RemainingBattery,
 		Uptime:           event.Uptime,
 		CoreTemp:         event.CoreTemp,
-		ReceivedOn:       time.Format("2006-01-02 15:04:05"),
+		ReceivedOn:       t.Format("2006-01-02 15:04:05"),
 	}
 
 	return
 }
 
 func convertTelemetryRecordToEvent(record mongoTelemetryRecord) (event dronescommon.TelemetryUpdatedEvent) {
-	t, _ := time.Parse("2006-01-01 15:04:05", record.ReceivedOn)
+	t, _ := time.Parse("2006-01-02 15:04:05", record.ReceivedOn)
 	event = dronescommon.TelemetryUpdatedEvent{
 		DroneID:          record.DroneID,
 		RemainingBattery: record.RemainingBattery,
