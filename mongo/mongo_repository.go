@@ -96,7 +96,7 @@ func (repo *EventRollupRepository) UpdateLastPositionEvent(positionEvent dronesc
 func (repo *EventRollupRepository) GetTelemetryEvent(droneID string) (event dronescommon.TelemetryUpdatedEvent, err error) {
 	record, err := repo.getTelemetryRecord(droneID)
 
-	if err != nil {
+	if err == nil {
 		event = convertTelemetryRecordToEvent(record)
 	}
 
