@@ -91,6 +91,15 @@ func (repo *EventRollupRepository) GetAlertEvent(droneID string) (event dronesco
 	return
 }
 
+// GetPositionEvent retrieves the most recent position event for a given drone.
+func (repo *EventRollupRepository) GetPositionEvent(droneID string) (event dronescommon.PositionChangedEvent, err error) {
+	record, err := repo.getPositionRecord(droneID)
+	if err == nil {
+		event = convertPositionRecordToEvent(record)
+	}
+	return
+}
+
 func (repo *EventRollupRepository) getTelemetryRecord(droneID string) (record mongoTelemetryRecord, err error) {
 	var records []mongoTelemetryRecord
 	query := bson.M{"drone_id": droneID}
