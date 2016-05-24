@@ -33,6 +33,8 @@ func TestIntegration(t *testing.T) {
 
 	alert := dronescommon.AlertSignalledEvent{DroneID: "abc12134", Description: "bob", FaultCode: 12, ReceivedOn: time.Now().Unix()}
 	dispatchMessage(ch, alert, alertsQueueName)
+	alert2 := dronescommon.AlertSignalledEvent{DroneID: "abc12134", Description: "new alert", FaultCode: 99, ReceivedOn: time.Now().Unix()}
+	dispatchMessage(ch, alert2, alertsQueueName)
 
 	position := dronescommon.PositionChangedEvent{DroneID: "drone2", Latitude: 30.12, Longitude: 25.00, Altitude: 52.00, ReceivedOn: time.Now().Unix()}
 	dispatchMessage(ch, position, positionsQueueName)
@@ -48,7 +50,7 @@ func TestIntegration(t *testing.T) {
 		t.Errorf("Failed checking repo for dispatched alert: %s\n", err.Error())
 		return
 	}
-	if alertEvent.FaultCode != 12 {
+	if alertEvent.FaultCode != 99 {
 		t.Errorf("Alert event in repo doesn't match dispatched event: orig: %+v, repo: %+v\n", alert, alertEvent)
 		return
 	}
