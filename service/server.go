@@ -31,7 +31,7 @@ func NewServer() *negroni.Negroni {
 	telemetryChannel := make(chan dronescommon.TelemetryUpdatedEvent)
 	positionChannel := make(chan dronescommon.PositionChangedEvent)
 
-	repo := InitRepository()
+	repo := initRepository()
 	dequeueEvents(alertChannel, telemetryChannel, positionChannel)
 	consumeEvents(alertChannel, telemetryChannel, positionChannel, repo)
 	return n
@@ -41,8 +41,7 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
 	mx.HandleFunc("/", homeHandler(formatter)).Methods("GET")
 }
 
-// InitRepository attempts to create a mongo repository
-func InitRepository() (repo eventRepository) {
+func initRepository() (repo eventRepository) {
 	appEnv, _ := cfenv.Current()
 	dbServiceURI, err := cftools.GetVCAPServiceProperty("mongo-eventrollup", "url", appEnv)
 	if err != nil || len(dbServiceURI) == 0 {
