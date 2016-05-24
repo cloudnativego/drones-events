@@ -52,6 +52,6 @@ deploy:
        password: $PASSWORD
        cmd: /pipeline/source/drones-events
        port: "8080"
-       tag: 1.0
+       tag: latest
        repository: cloudnativego/drones-events
        registry: https://registry.hub.docker.com
