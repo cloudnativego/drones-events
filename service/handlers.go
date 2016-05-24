@@ -6,8 +6,8 @@ import (
 	"github.com/unrolled/render"
 )
 
-func queryStatsHandler(formatter *render.Render) http.HandlerFunc {
+func homeHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		formatter.JSON(w, http.StatusOK, &Stats)
+		formatter.Text(w, http.StatusOK, "Drones Sample - Event Processor see http://github.com/cloudnativego/drones-events")
 	}
 }

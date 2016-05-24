@@ -31,35 +31,31 @@ func NewServer() *negroni.Negroni {
 	telemetryChannel := make(chan dronescommon.TelemetryUpdatedEvent)
 	positionChannel := make(chan dronescommon.PositionChangedEvent)
 
-	Stats.AlertEventCount = 0
-	Stats.PositionEventCount = 0
-	Stats.TelemetryEventCount = 0
-
-	repo := initRepository()
+	repo := InitRepository()
 	dequeueEvents(alertChannel, telemetryChannel, positionChannel)
 	consumeEvents(alertChannel, telemetryChannel, positionChannel, repo)
 	return n
 }
 
 func initRoutes(mx *mux.Router, formatter *render.Render) {
-	mx.HandleFunc("/api/stats", queryStatsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/", homeHandler(formatter)).Methods("GET")
 }
 
-func initRepository() (repo eventRepository) {
+// InitRepository attempts to create a mongo repository
+func InitRepository() (repo eventRepository) {
 	appEnv, _ := cfenv.Current()
-	dbServiceURI, err := cftools.GetVCAPServiceProperty("mongo-eventrollup", "uri", appEnv)
+	dbServiceURI, err := cftools.GetVCAPServiceProperty("mongo-eventrollup", "url", appEnv)
 	if err != nil || len(dbServiceURI) == 0 {
 		if err != nil {
 			fmt.Printf("\nError retreieving database configuration: %v\n", err)
 		}
-		fmt.Println("MongoDB was not detected, using fake repository THIS IS BAD...")
-		repo = NewFakeRepository()
+		fmt.Println("MongoDB was not detected, using fake repository (THIS IS BAD)...")
+		repo = newFakeRepository()
 	} else {
 		telemetryCollection := cfmgo.Connect(cfmgo.NewCollectionDialer, dbServiceURI, "telemetry")
 		positionsCollection := cfmgo.Connect(cfmgo.NewCollectionDialer, dbServiceURI, "positions")
 		alertsCollection := cfmgo.Connect(cfmgo.NewCollectionDialer, dbServiceURI, "alerts")
 		repo = mongo.NewEventRollupRepository(positionsCollection, alertsCollection, telemetryCollection)
 	}
-
 	return
 }

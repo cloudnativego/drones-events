@@ -8,7 +8,7 @@ type fakeRepository struct {
 	lastTelemetry dronescommon.TelemetryUpdatedEvent
 }
 
-func NewFakeRepository() *fakeRepository {
+func newFakeRepository() *fakeRepository {
 	return &fakeRepository{}
 }
 

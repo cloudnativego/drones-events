@@ -9,14 +9,10 @@ import (
 	dronescommon "github.com/cloudnativego/drones-common"
 )
 
-func TestConsumerPlaceholder(t *testing.T) {
+func TestConsumer(t *testing.T) {
 	alertChannel := make(chan dronescommon.AlertSignalledEvent)
 	telemetryChannel := make(chan dronescommon.TelemetryUpdatedEvent)
 	positionChannel := make(chan dronescommon.PositionChangedEvent)
-
-	Stats.AlertEventCount = 0
-	Stats.PositionEventCount = 0
-	Stats.TelemetryEventCount = 0
 
 	repo := &fakeRepository{}
 	consumeEvents(alertChannel, telemetryChannel, positionChannel, repo)
@@ -42,8 +38,5 @@ func TestConsumerPlaceholder(t *testing.T) {
 
 	if math.Floor(float64(repo.lastPosition.Latitude)) != 32 {
 		t.Errorf("Expected last position latitude of 32.45, got %f", repo.lastPosition.Latitude)
-	}
-	if Stats.AlertEventCount != 2 || Stats.PositionEventCount != 1 || Stats.TelemetryEventCount != 1 {
-		t.Errorf("Stats counters are not as expected. Got %+v", Stats)
 	}
 }

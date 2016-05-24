@@ -11,9 +11,14 @@ import (
 )
 
 func dequeueEvents(alertChannel chan common.AlertSignalledEvent, telemetryChannel chan common.TelemetryUpdatedEvent, positionChannel chan common.PositionChangedEvent) {
-	fmt.Println("Starting AMQP queue de-serializer...")
+	fmt.Printf("Starting AMQP queue de-serializer...")
 	appEnv, _ := cfenv.Current()
-	amqpURI, err := cftools.GetVCAPServiceProperty("rabbit", "uri", appEnv)
+	amqpURI, err := cftools.GetVCAPServiceProperty("rabbit", "url", appEnv)
+	if err != nil {
+		fmt.Println("No Rabbit/AMQP connection details supplied. ABORTING. No events will be dequeued!!!")
+		return
+	}
+	fmt.Printf("dialing %s\n", amqpURI)
 	conn, err := amqp.Dial(amqpURI)
 	if err != nil {
 		fmt.Printf("Failed to connect to rabbit, %v\n", err)
@@ -23,34 +28,34 @@ func dequeueEvents(alertChannel chan common.AlertSignalledEvent, telemetryChanne
 		fmt.Printf("Failed to open AMQP channel %v\n", err)
 	}
 
-	alertsQ, err := ch.QueueDeclare(
-		"alerts", // name
-		false,    // durable
-		false,    // delete when usused
-		false,    // exclusive
-		false,    // no-wait
-		nil,      // arguments
+	alertsQ, _ := ch.QueueDeclare(
+		alertsQueueName, // name
+		false,           // durable
+		false,           // delete when usused
+		false,           // exclusive
+		false,           // no-wait
+		nil,             // arguments
 	)
 
-	positionsQ, err := ch.QueueDeclare(
-		"positions", // name
-		false,       // durable
-		false,       // delete when usused
-		false,       // exclusive
-		false,       // no-wait
-		nil,         // arguments
+	positionsQ, _ := ch.QueueDeclare(
+		positionsQueueName, // name
+		false,              // durable
+		false,              // delete when usused
+		false,              // exclusive
+		false,              // no-wait
+		nil,                // arguments
 	)
 
-	telemetryQ, err := ch.QueueDeclare(
-		"telemetry", // name
-		false,       // durable
-		false,       // delete when usused
-		false,       // exclusive
-		false,       // no-wait
-		nil,         // arguments
+	telemetryQ, _ := ch.QueueDeclare(
+		telemetryQueueName, // name
+		false,              // durable
+		false,              // delete when usused
+		false,              // exclusive
+		false,              // no-wait
+		nil,                // arguments
 	)
 
-	alertsIn, err := ch.Consume(
+	alertsIn, _ := ch.Consume(
 		alertsQ.Name,
 		"",
 		true,
@@ -60,7 +65,7 @@ func dequeueEvents(alertChannel chan common.AlertSignalledEvent, telemetryChanne
 		nil,
 	)
 
-	positionsIn, err := ch.Consume(
+	positionsIn, _ := ch.Consume(
 		positionsQ.Name,
 		"",
 		true,
@@ -70,7 +75,7 @@ func dequeueEvents(alertChannel chan common.AlertSignalledEvent, telemetryChanne
 		nil,
 	)
 
-	telemetryIn, err := ch.Consume(
+	telemetryIn, _ := ch.Consume(
 		telemetryQ.Name,
 		"",
 		true,

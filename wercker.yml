@@ -2,6 +2,7 @@ box: golang
 
 services:
   - rabbitmq:3
+  - mongo
 
 build:
 
@@ -9,27 +10,14 @@ build:
     - setup-go-workspace
 
     - script:
-        name: env
-        code: env
-
-    - script:
         name: go get
         code: |
           cd $WERCKER_SOURCE_DIR
           go version
-          go get -u github.com/tools/godep
+          go get -u github.com/Masterminds/glide
+          go get -u github.com/cloudnativego/cf-tools/vcapinate
           export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
-
-    # Test the project
-    - script:
-        name: go test
-        code: |
-          go test -v ./service/...
-
-    - script:
-        name: integration tests
-        code: |
-          go test ./integrations/_test -v -race
+          glide install
 
     # Build the project
     - script:
@@ -37,10 +25,24 @@ build:
         code: |
           go build
 
+    # Test the project
+    - script:
+        name: go test
+        code: |
+          go test -v ./service
+
+    - script:
+        name: integration tests
+        code: |
+          export VCAP_SERVICES=`vcapinate -path=./integrations/vcap.yml`
+          export VCAP_APPLICATION={}
+          go test ./integrations/_test -v -race
+
     - script:
         name: copy files to wercker output
         code: |
           cp -R ./ ${WERCKER_OUTPUT_DIR}
+
 
 
 deploy:

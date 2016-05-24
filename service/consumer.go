@@ -27,17 +27,14 @@ func processAlert(repo eventRepository, alertEvent common.AlertSignalledEvent) {
 	fmt.Printf("Processing alert %+v\n", alertEvent)
 
 	repo.UpdateLastAlertEvent(alertEvent)
-	Stats.AlertEventCount++
 }
 
 func processTelemetry(repo eventRepository, telemetryEvent common.TelemetryUpdatedEvent) {
 	fmt.Printf("Processing telemetry %+v\n", telemetryEvent)
 	repo.UpdateLastTelemetryEvent(telemetryEvent)
-	Stats.TelemetryEventCount++
 }
 
 func processPosition(repo eventRepository, positionEvent common.PositionChangedEvent) {
 	fmt.Printf("Processing position %+v\n", positionEvent)
 	repo.UpdateLastPositionEvent(positionEvent)
-	Stats.PositionEventCount++
 }

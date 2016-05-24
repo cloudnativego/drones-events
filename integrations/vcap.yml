@@ -1,0 +1,8 @@
+---
+userprovided:
+- name: mongo-eventrollup
+  credentials:
+    url: mongodb://{{.MONGO_PORT_27017_TCP_ADDR}}:{{.MONGO_PORT_27017_TCP_PORT}}/some-guid-string
+- name: rabbit
+  credentials:
+    url: amqp://guest:guest@{{.RABBITMQ_PORT_5672_TCP_ADDR}}:5672/
